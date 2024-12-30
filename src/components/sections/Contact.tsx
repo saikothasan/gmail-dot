@@ -1,29 +1,45 @@
 import React, { useState } from 'react';
 import { Send } from 'lucide-react';
 import { Toast } from '../ui/Toast';
+import emailjs from '@emailjs/browser';
 
 export const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    message: ''
+    message: '',
   });
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, you'd send this to your backend
-    console.log('Form submitted:', formData);
-    setToast({ message: 'Message sent successfully!', type: 'success' });
-    setFormData({ name: '', email: '', message: '' });
+    setIsSubmitting(true);
+
+    const { name, email, message } = formData;
+
+    try {
+      // Replace with your EmailJS credentials
+      const serviceID = 'service_xag5ohe';
+      const templateID = 'saikothsan';
+      const publicKey = 'nhclsi_h_X-rEJGTq';
+
+      await emailjs.send(serviceID, templateID, { name, email, message }, publicKey);
+
+      setToast({ message: 'Message sent successfully!', type: 'success' });
+      setFormData({ name: '', email: '', message: '' });
+    } catch (error) {
+      console.error('Failed to send email:', error);
+      setToast({ message: 'Failed to send message. Please try again later.', type: 'error' });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <section className="py-16 px-4 bg-gray-50 dark:bg-gray-800">
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-12 dark:text-white">
-          Contact Us
-        </h2>
+        <h2 className="text-3xl font-bold text-center mb-12 dark:text-white">Contact Us</h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -70,10 +86,12 @@ export const Contact: React.FC = () => {
 
           <button
             type="submit"
-            className="w-full md:w-auto px-8 py-3 bg-[#4285F4] text-white rounded-md hover:bg-[#3367d6] transition duration-200 flex items-center justify-center"
+            disabled={isSubmitting}
+            className={`w-full md:w-auto px-8 py-3 ${
+              isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#4285F4] hover:bg-[#3367d6]'
+            } text-white rounded-md transition duration-200 flex items-center justify-center`}
           >
-            <Send size={16} className="mr-2" />
-            Send Message
+            {isSubmitting ? 'Sending...' : <><Send size={16} className="mr-2" /> Send Message</>}
           </button>
         </form>
 
