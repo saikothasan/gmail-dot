@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Send } from 'lucide-react';
-import { Toast } from '../ui/Toast';
-import emailjs from '@emailjs/browser';
 import { Turnstile } from '@marsidev/react-turnstile'; // Import Turnstile
+import emailjs from '@emailjs/browser';
 
 export const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -31,7 +30,6 @@ export const Contact: React.FC = () => {
       const templateID = 'saikothsan';
       const publicKey = 'nhclsi_h_X-rEJGTq';
 
-      // Include captchaToken in your email or send it to your backend for verification
       await emailjs.send(serviceID, templateID, { name, email, message, captchaToken }, publicKey);
 
       setToast({ message: 'Message sent successfully!', type: 'success' });
@@ -46,38 +44,80 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Name"
-        value={formData.name}
-        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-        required
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        value={formData.email}
-        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-        required
-      />
-      <textarea
-        placeholder="Message"
-        value={formData.message}
-        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-        required
-      />
-      {/* Turnstile CAPTCHA */}
-      <Turnstile
-        siteKey="0x4AAAAAAA4QUgy-hEF_bOfI" // Replace with your site key
-        onSuccess={(token) => setCaptchaToken(token)} // Set the token on success
-        onError={() => setToast({ message: 'CAPTCHA verification failed.', type: 'error' })}
-        onExpire={() => setCaptchaToken(null)} // Reset token if expired
-      />
-      <button type="submit" disabled={isSubmitting || !captchaToken}>
-        {isSubmitting ? 'Submitting...' : <Send />}
-      </button>
-      {toast && <Toast type={toast.type}>{toast.message}</Toast>}
-    </form>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-lg p-8 bg-white shadow-lg rounded-lg space-y-6"
+      >
+        <h2 className="text-2xl font-bold text-center text-gray-700">Contact Us</h2>
+        <div>
+          <label className="block text-sm font-medium text-gray-700" htmlFor="name">
+            Name
+          </label>
+          <input
+            id="name"
+            type="text"
+            placeholder="Your Name"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            className="w-full mt-1 px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700" htmlFor="email">
+            Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            placeholder="Your Email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            className="w-full mt-1 px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700" htmlFor="message">
+            Message
+          </label>
+          <textarea
+            id="message"
+            placeholder="Your Message"
+            value={formData.message}
+            onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+            className="w-full mt-1 px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            rows={4}
+            required
+          ></textarea>
+        </div>
+        {/* Turnstile CAPTCHA */}
+        <div>
+          <Turnstile
+            siteKey="0x4AAAAAAA4QUgy-hEF_bOfI" // Replace with your Turnstile site key
+            onSuccess={(token) => setCaptchaToken(token)} // Set the token on success
+            onError={() => setToast({ message: 'CAPTCHA verification failed.', type: 'error' })}
+            onExpire={() => setCaptchaToken(null)} // Reset token if expired
+          />
+        </div>
+        <button
+          type="submit"
+          disabled={isSubmitting || !captchaToken}
+          className="w-full py-2 px-4 bg-blue-600 text-white rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          {isSubmitting ? 'Submitting...' : <span className="flex items-center justify-center"><Send className="mr-2" />Send Message</span>}
+        </button>
+        {toast && (
+          <div
+            className={`mt-4 text-center p-2 rounded ${
+              toast.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+            }`}
+          >
+            {toast.message}
+          </div>
+        )}
+      </form>
+    </div>
   );
 };
