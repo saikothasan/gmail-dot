@@ -5,23 +5,23 @@ const features = [
   {
     icon: <Mail className="text-[#4285F4]" size={24} />,
     title: 'Multiple Variants',
-    description: 'Generate unlimited email variants using Gmail's dot (.) and plus (+) features'
+    description: 'Generate unlimited email variants using Gmail\'s dot (.) and plus (+) features',
   },
   {
     icon: <Shield className="text-[#34A853]" size={24} />,
     title: 'Track Sources',
-    description: 'Identify which services share your email address'
+    description: 'Identify which services share your email address',
   },
   {
     icon: <Filter className="text-[#FBBC05]" size={24} />,
     title: 'Email Filtering',
-    description: 'Create custom filters based on email variants'
+    description: 'Create custom filters based on email variants',
   },
   {
     icon: <Share2 className="text-[#4285F4]" size={24} />,
     title: 'Easy Export',
-    description: 'Export your variants in CSV format'
-  }
+    description: 'Export your variants in CSV format',
+  },
 ];
 
 export const Features: React.FC = () => {
